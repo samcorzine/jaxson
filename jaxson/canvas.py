@@ -2,6 +2,7 @@ import jax.numpy as jnp
 from typing import Tuple
 from jaxson.utils import clamp
 
+
 class Canvas:
     def __init__(self, shape: Tuple[int, int, int]):
         self.shape = shape
@@ -22,7 +23,9 @@ class Canvas:
         grad = x * y
         return grad
 
-    def smooth_circle(self, width=0.1, height=0.1, center_x=0.5, center_y=0.5) -> jnp.ndarray:
+    def smooth_circle(
+        self, width=0.1, height=0.1, center_x=0.5, center_y=0.5
+    ) -> jnp.ndarray:
         x, y = self.xy()
         img = 1 - (
             (1 / (width ** 2)) * (x - center_x) ** 2
@@ -31,10 +34,11 @@ class Canvas:
         # img = jnp.reshape(img, self.shape)
         return clamp(img)
 
-    def circle(self, width=0.1, height=0.1, center_x=0.5, center_y=0.5, brightness=1.0) -> jnp.ndarray:
+    def circle(
+        self, width=0.1, height=0.1, center_x=0.5, center_y=0.5, brightness=1.0
+    ) -> jnp.ndarray:
         x, y = self.xy()
-        img = (1/width) * (x - center_x)**2 + (1/height) * (y - center_y)**2
-
+        img = (1 / width) * (x - center_x) ** 2 + (1 / height) * (y - center_y) ** 2
         img = img <= 0.1
         img = img * brightness
         return clamp(img)
@@ -51,7 +55,8 @@ class Canvas:
     def wave(self, frequency: float, offset: float):
         x, y = self.xy()
         img = jnp.sin(
-            offset + frequency * x * jnp.reshape(jnp.ones(self.y_shape), (self.y_shape, 1))
+            offset
+            + frequency * x * jnp.reshape(jnp.ones(self.y_shape), (self.y_shape, 1))
         )
         return img
 
