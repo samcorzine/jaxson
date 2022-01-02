@@ -1,3 +1,4 @@
 renders/
 venv/
 .idea/
+dist/
