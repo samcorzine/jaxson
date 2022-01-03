@@ -5,11 +5,11 @@ from jaxson import Canvas
 
 # Set up canvas
 density = 400
-canvas = Canvas(shape=(1, density, density))
+canvas = Canvas(width=density, height=density)
 
 # Drawing logic
 sum = canvas.zeros()
-sum = sum + canvas.circle()
+sum = sum + canvas.square(color=[0.5, 0.7, 0.2])
 
 # Rendering
 img = np.array(255 * sum)
