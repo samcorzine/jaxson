@@ -21,7 +21,7 @@ class Canvas:
         return input * brightness
 
     def apply_color(self, input: jnp.array, rgb: jnp.array):
-        input = input.reshape(400, 400, 1)
+        input = input.reshape(self.x_shape, self.y_shape, 1)
         return input * rgb
 
     def gradient(self):
