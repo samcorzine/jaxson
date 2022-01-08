@@ -9,7 +9,7 @@ canvas = Canvas(width=density, height=density)
 
 # Drawing logic
 sum = canvas.zeros()
-sum = sum + canvas.square(color=[0.5, 0.7, 0.2])
+sum = sum + canvas.smooth_square(color=[0.5, 0.7, 0.2])
 
 # Rendering
 img = np.array(255 * sum)

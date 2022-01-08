@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 from typing import Tuple
 from jaxson.utils import clamp
-
+from jax.scipy.special import expit
 
 class Canvas:
     def __init__(self, width=100, height=100):
@@ -37,15 +37,19 @@ class Canvas:
         center_y=0.5,
         brightness=1.0,
         color=[1.0, 1.0, 1.0],
+        edge_transition_coeff=10
     ) -> jnp.ndarray:
         x, y = self.xy()
-        img = 1 - (
-            (1 / (width ** 2)) * (x - center_x) ** 2
-            + (1 / (height ** 2)) * (y - center_y) ** 2
+        x_diff = x - center_x
+        y_diff = y - center_y
+        img = edge_transition_coeff - edge_transition_coeff * (
+            (1 / (width ** 2)) * x_diff ** 2
+            + (1 / (height ** 2)) * y_diff ** 2
         )
+        img = expit(img)
         img = self.apply_brightness(img, brightness)
         img = self.apply_color(img, jnp.array(color))
-        return clamp(img)
+        return img
 
     def circle(
         self,
@@ -65,19 +69,19 @@ class Canvas:
 
     def smooth_square(
         self,
-        width=0.2,
-        height=0.2,
+        width=0.1,
+        height=0.1,
         center_x=0.5,
         center_y=0.5,
         brightness=1.0,
         color=[1.0, 1.0, 1.0],
+        edge_transition_coeff=25
     ) -> jnp.ndarray:
-        x = jnp.linspace(0.0, 1.0, self.shape[0])
-        y = jnp.reshape(jnp.linspace(0.0, 1.0, self.shape[1]), (self.shape[1], 1))
-        img = 1 - (
-            (1 / (width ** 2)) * abs(x - center_x)
-            + (1 / (height ** 2)) * abs(y - center_y)
-        )
+        x, y = self.xy()
+        x_diff = abs(x - center_x) / width
+        y_diff = abs(y - center_y) / height
+        max_diff = jnp.maximum(x_diff, y_diff)
+        img = expit(edge_transition_coeff - edge_transition_coeff * max_diff)
         img = self.apply_brightness(img, brightness)
         img = self.apply_color(img, jnp.array(color))
         return img
